@@ -3,13 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S N A K E</title>
-    <link rel="stylesheet" href="css/estilo.css">
+    <title>S N A K E</title> 
 </head>
 <body>
-    <canvas id="stage"></canvas>
+    <canvas id="stage" width="400" height="400"></canvas>
     <script>
-        
+        window.onload = function(){
+            var stage = document.getElementById('stage');
+            var ctx = stage.getContext("2d");
+            document.addEventListener('keydown', keyPush);
+
+            setInterval(game, 60);
+
+            const vel = 1;
+            var vx = vy = 0;    //velocidade nos eixos x e y
+            var px = 10;    // pontos (coordenadas) inicais eixo x
+            var py = 15;    // pontos (coordenadas) inicais eixo y
+            var lp = 20;    //tamanho da peca
+            var qp = 20;    //qtde de pecas
+            var hx = hy = 15    //coordenanda inicial da cabeca
+
+            var trail = [];
+            var tail = 5;
+
+            function game(){
+                px += vx;
+                py += vy;
+
+                if (px < 0){
+                    px = qp - 1;
+                }
+                if(px > qp-1){
+                    px = 0;
+                }
+
+                if(py < 0){
+                    py = qp - 1;
+                }
+                if(py > qp-1){
+                    py = 0;
+                }
+
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0,0, stage.width, stage.height);
+
+                ctx.fillStyle = 'red';
+                ctx.fillRect(hx*lp,hy*lp, lp, lp);
+
+                ctx.fillStyle = 'grey';
+                for(let i = 0; i < trail.length; i++){
+                    ctx.fillRect(trail[i].x*lp, trail[i].y*lp, lp-1, lp-1);
+                    if(trail[i].x == px && trail[i].y == py){
+                        vx = vy = 0;
+                        tail = 5;
+                        //alert('GAME OVER!!!')
+                    }
+                }
+
+                trail.push({x:px, y:py});
+                while(trail.length > tail){
+                    trail.shift();
+                }
+
+                if(hx == px && hy == py){
+                    tail += 1;
+                    hx = Math.floor(Math.random()*qp);
+                    hy = Math.floor(Math.random()*qp);
+                }
+            }
+
+            function keyPush(event){
+                switch(event.keyCode){
+                    case 37: //left
+                        vx = -vel;
+                        vy = 0;
+                        break;
+                    case 38: //up
+                        vx = 0;
+                        vy = -vel;
+                        break;
+                    case 39: //right
+                        vx = vel;
+                        vy = 0;
+                        break;
+                    case 40: //down
+                        vx = 0;
+                        vy = vel;
+                        break;
+                    
+                    default:
+                        break;
+                }
+            }
+
+        }
     </script>
     
 </body>
